@@ -10,6 +10,11 @@ import { useState } from "react"
 import {AiFillEyeInvisible, AiFillEye} from "react-icons/ai"
 import { Link } from 'react-router-dom';
 import OAuth from '../components/OAuth';
+import {getAuth, createUserWithEmailAndPassword, updateProfile} from "firebase/auth"
+import { db } from "../firebase";
+import { serverTimestamp, setDoc, doc } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
+import {toast} from "react-toastify"
 
 export default function SignIUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,11 +24,35 @@ export default function SignIUp() {
     password: "",
   });
   const { name, email, password } = formData;
+  const navigate = useNavigate()
   function onChange(e) {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
     }));
+  }
+  async function onSubmit(e) {
+    e.preventDefault()
+
+    try {
+      const auth = getAuth()
+      const userCredential = await createUserWithEmailAndPassword
+      (auth, email, password);
+
+      updateProfile(auth.currentUser, {
+        displayName: name
+      })
+      const user = userCredential.user;
+      const formDataCopy = {...formData};
+      delete formDataCopy.password;
+      formDataCopy.timestamp = serverTimestamp();
+
+      await setDoc(doc(db, "users", user.uid), formDataCopy)
+      navigate("/");
+      toast.success("Signed up successfully");
+    } catch (error) {
+      toast.error("Something went wrong with the registration process");
+    }
   }
   return (
     <section>
@@ -33,7 +62,7 @@ export default function SignIUp() {
           <img className='w-full rounded-2xl' src="https://media.istockphoto.com/id/1351204753/photo/open-the-door-and-door-handle-with-a-key-and-a-keychain-shaped-house-property-investment-and.webp?b=1&s=170667a&w=0&k=20&c=Wo5Njl3Sh1tp9LtpYtueyAl5mCRv3DuI4VG8u6miWug=" alt="Key" />
         </figure>
         <article className='w-full md:w-[67%] lg:w-[40%] lg:ml-20'>
-          <form >
+          <form onSubmit={onSubmit}>
           <input className='w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out mb-6' type="text" id='name' value={name} onChange={onChange} placeholder='Full name' />
             <input className='w-full px-4 py-2 text-xl text-gray-700 bg-white border-gray-300 rounded transition ease-in-out mb-6' type="email" id='email' value={email} onChange={onChange} placeholder='Email address' />
             <div className ="relative mb-6">

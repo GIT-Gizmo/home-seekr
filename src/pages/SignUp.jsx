@@ -1,10 +1,3 @@
-// import React from 'react'
-
-// export default function SignUp() {
-//   return (
-//     <div>Sign Up</div>
-//   )
-// }
 import React from 'react'
 import { useState } from "react"
 import {AiFillEyeInvisible, AiFillEye} from "react-icons/ai"

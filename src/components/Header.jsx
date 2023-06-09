@@ -1,12 +1,12 @@
-import React from 'react'
-import {useLocation, useNavigate} from "react-router-dom"
+import React from 'react';
+import {useLocation, useNavigate} from "react-router-dom";
 
 export default function Header() {
-    const location = useLocation()
-    const navigate = useNavigate()
+    const location = useLocation();
+    const navigate = useNavigate();
     function pathMatchRoute(route) {
         if (route === location.pathname) {
-            return true
+            return true;
         }
     }
   return (

@@ -3,8 +3,9 @@ import React, { useState } from 'react'
 export default function CreateListing() {
   const [formData, setFormData] = useState({
     type: "sale",
+    name: ""
   });
-  const {type} = formData;
+  const {type, name} = formData;
   function onChange() {
 
   }
@@ -22,6 +23,8 @@ export default function CreateListing() {
             type === "sale" ? "bg-white text-black" : "bg-slate-600 text-white"
           }`}>Rent</button>
         </div>
+        <p className='text-lg mt-6 font-semibold'>Name</p>
+        <input type="text" id='name' value={name} onChange={onChange} placeholder='Property Name' maxLength={32} minLength={6} />
       </form>
     </main>
   )
